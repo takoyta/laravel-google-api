@@ -8,7 +8,7 @@ Require this package with composer using the following command:
 composer require websecret/laravel-google-api
 ```
 
-###Usage
+### Usage
 
 ```php
 $youtubeChannelsProvider = new Websecret\LaravelGoogleApi\Provider\Youtube\Channels([
@@ -38,7 +38,7 @@ $youtubeChannelsProvider = new Websecret\LaravelGoogleApi\Provider\Youtube\Chann
 ]);
 ```
 
-####Pagination
+#### Pagination
 
 ```php
 $youtubeChannelsPaginator = new Websecret\LaravelGoogleApi\Paginator($youtubeChannelsProvider);
@@ -48,7 +48,7 @@ foreach($youtubeChannelsPaginator->paginate($youtubeChannelsProvider->getListReq
 }       
 ```
 
-###Available providers
+### Available providers
 
 * Youtube
     * Analytics
