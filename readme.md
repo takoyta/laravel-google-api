@@ -39,6 +39,7 @@ $youtubeChannelsProvider = new Websecret\LaravelGoogleApi\Provider\Youtube\Chann
 ```
 
 ####Pagination
+
 ```php
 $youtubeChannelsPaginator = new Websecret\LaravelGoogleApi\Paginator($youtubeChannelsProvider);
 
