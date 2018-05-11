@@ -38,6 +38,15 @@ $youtubeChannelsProvider = new Websecret\LaravelGoogleApi\Provider\Youtube\Chann
 ]);
 ```
 
+####Pagination
+```php
+$youtubeChannelsPaginator = new Websecret\LaravelGoogleApi\Paginator($youtubeChannelsProvider);
+
+foreach($youtubeChannelsPaginator->paginate($youtubeChannelsProvider->getListRequest($params)) as $youtubeChannelsRequest) {
+    $response = $youtubeChannelsProvider->getParsedResponse($youtubeChannelsRequest); 
+}       
+```
+
 ###Available providers
 
 * Youtube
