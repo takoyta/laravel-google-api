@@ -1,0 +1,21 @@
+{
+    "name": "websecret/laravel-google-api",
+    "description": "Google API Provider for Laravel projects",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "websecret.by",
+            "email": "info@websecret.by"
+        }
+    ],
+    "require": {
+        "illuminate/support": "5.*",
+        "league/oauth2-google": "^2.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Websecret\\LaravelGoogleApi\\": "src"
+        }
+    }
+}
