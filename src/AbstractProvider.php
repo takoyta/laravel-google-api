@@ -86,13 +86,23 @@ abstract class AbstractProvider
      */
     public function checkToken($token)
     {
-        $url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?' . http_build_query(['access_token' => $token]);
-        $request = $this->getRequest('GET', $url);
         try {
-            return $this->getParsedResponse($request) ? true : false;
+            return $this->getTokenInfo($token) ? true : false;
         } catch (\Throwable $e) {
             return false;
         }
+    }
+
+    /**
+     * @param $token
+     * @return mixed
+     */
+    public function getTokenInfo($token)
+    {
+        if ($token instanceof OAuth2\Client\Token\AccessToken) $token = $token->getToken();
+        $url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?' . http_build_query(['access_token' => $token]);
+        $request = $this->getRequest('GET', $url);
+        return $this->getParsedResponse($request);
     }
 
     /**
@@ -230,5 +240,17 @@ abstract class AbstractProvider
     public static function mergeAuthScopes($scopes)
     {
         return array_unique(array_merge(static::getAuthScopes(), $scopes));
+    }
+
+    /**
+     * @param $scopes
+     * @return bool
+     */
+    public static function checkAuthScopes($scopes)
+    {
+        if (is_string($scopes)) {
+            $scopes = explode(' ', $scopes);
+        }
+        return count(array_diff(static::getAuthScopes(), $scopes)) ? false : true;
     }
 }
