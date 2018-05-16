@@ -230,7 +230,10 @@ abstract class AbstractProvider
      */
     public static function getAuthScopes()
     {
-        return [];
+        return [
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+        ];
     }
 
     /**
