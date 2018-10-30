@@ -33,30 +33,56 @@ abstract class AbstractProvider
     }
 
     /**
-     * @param mixed $token
-     * @return $this
+     * @param array $parameters
+     * @return array
      */
-    public function setToken($token)
+    public static function mergeAuthParameters($parameters)
     {
-        $this->token = $this->getTokenObject($token);
-        return $this;
+        return array_unique(array_merge(static::getAuthParameters(), $parameters));
     }
 
     /**
-     * @param $token
-     * @param null $refreshToken
-     * @return OAuth2\Client\Token\AccessToken
+     * @return array
      */
-    protected function getTokenObject($token, $refreshToken = null)
+    public static function getAuthParameters()
     {
-        if ($token instanceof OAuth2\Client\Token\AccessToken) return $token;
-        if (!is_array($token)) {
-            $token = ['access_token' => $token];
+        return [
+            'access_type' => 'offline',
+            'include_granted_scopes' => 'true',
+            'prompt' => 'consent select_account',
+        ];
+    }
+
+    /**
+     * @param array $scopes
+     * @return array
+     */
+    public static function mergeAuthScopes($scopes)
+    {
+        return array_unique(array_merge(static::getAuthScopes(), $scopes));
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAuthScopes()
+    {
+        return [
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+        ];
+    }
+
+    /**
+     * @param $scopes
+     * @return bool
+     */
+    public static function checkAuthScopes($scopes)
+    {
+        if (is_string($scopes)) {
+            $scopes = explode(' ', $scopes);
         }
-        if ($refreshToken) {
-            $token['refresh_token'] = $refreshToken;
-        }
-        return new OAuth2\Client\Token\AccessToken($token);
+        return count(array_diff(static::getAuthScopes(), $scopes)) ? false : true;
     }
 
     /**
@@ -68,41 +94,13 @@ abstract class AbstractProvider
     }
 
     /**
-     * @param string $refreshToken
+     * @param mixed $token
      * @return $this
      */
-    public function refreshToken($refreshToken)
+    public function setToken($token)
     {
-        $grant = new OAuth2\Client\Grant\RefreshToken();
-        $token = $this->provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
-        $newToken = $this->getTokenObject($token->jsonSerialize(), $refreshToken);
-        $this->setToken($newToken);
+        $this->token = $this->getTokenObject($token);
         return $this;
-    }
-
-    /**
-     * @param $token
-     * @return bool
-     */
-    public function checkToken($token)
-    {
-        try {
-            return $this->getTokenInfo($token) ? true : false;
-        } catch (\Throwable $e) {
-            return false;
-        }
-    }
-
-    /**
-     * @param $token
-     * @return mixed
-     */
-    public function getTokenInfo($token)
-    {
-        if ($token instanceof OAuth2\Client\Token\AccessToken) $token = $token->getToken();
-        $url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?' . http_build_query(['access_token' => $token]);
-        $request = $this->getRequest('GET', $url);
-        return $this->getParsedResponse($request);
     }
 
     /**
@@ -132,6 +130,48 @@ abstract class AbstractProvider
     }
 
     /**
+     * @param $token
+     * @param null $refreshToken
+     * @return OAuth2\Client\Token\AccessToken
+     */
+    protected function getTokenObject($token, $refreshToken = null)
+    {
+        if ($token instanceof OAuth2\Client\Token\AccessToken) return $token;
+        if (!is_array($token)) {
+            $token = ['access_token' => $token];
+        }
+        if ($refreshToken) {
+            $token['refresh_token'] = $refreshToken;
+        }
+        return new OAuth2\Client\Token\AccessToken($token);
+    }
+
+    /**
+     * @param $token
+     * @return bool
+     */
+    public function checkToken($token)
+    {
+        try {
+            return $this->getTokenInfo($token) ? true : false;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param $token
+     * @return mixed
+     */
+    public function getTokenInfo($token)
+    {
+        if ($token instanceof OAuth2\Client\Token\AccessToken) $token = $token->getToken();
+        $url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?' . http_build_query(['access_token' => $token]);
+        $request = $this->getRequest('GET', $url);
+        return $this->getParsedResponse($request);
+    }
+
+    /**
      * @param string $method
      * @param string $url
      * @param array $options
@@ -150,14 +190,40 @@ abstract class AbstractProvider
     }
 
     /**
-     * @param string $method
-     * @param string $url
-     * @param array $options
-     * @return RequestInterface
+     * @param RequestInterface $request
+     * @return mixed
      */
-    protected function getAuthenticatedRequest($method, $url, $options = [])
+    public function getParsedResponse($request)
     {
-        return $this->provider->getAuthenticatedRequest($method, $url, $this->token, $options);
+        return $this->provider->getParsedResponse($request);
+    }
+
+    /**
+     * @param string $refreshToken
+     * @return $this
+     */
+    public function refreshToken($refreshToken)
+    {
+        $grant = new OAuth2\Client\Grant\RefreshToken();
+        $token = $this->provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
+        $newToken = $this->getTokenObject($token->jsonSerialize(), $refreshToken);
+        $this->setToken($newToken);
+        return $this;
+    }
+
+    /**
+     * @param string $url
+     * @param integer $size
+     * @return string
+     */
+    public function download($url, $size = 8 * 1024)
+    {
+        $request = $this->getComputedRequest('GET', $url);
+        $response = $this->getResponse($request);
+        $responseBody = $response->getBody();
+        while (!$responseBody->eof()) {
+            yield $responseBody->read($size);
+        }
     }
 
     /**
@@ -174,21 +240,23 @@ abstract class AbstractProvider
     }
 
     /**
-     * @param RequestInterface $request
-     * @return mixed
+     * @param string $method
+     * @param string $url
+     * @param array $options
+     * @return RequestInterface
      */
-    public function getResponse($request)
+    protected function getAuthenticatedRequest($method, $url, $options = [])
     {
-        return $this->provider->getResponse($request);
+        return $this->provider->getAuthenticatedRequest($method, $url, $this->token, $options);
     }
 
     /**
      * @param RequestInterface $request
      * @return mixed
      */
-    public function getParsedResponse($request)
+    public function getResponse($request)
     {
-        return $this->provider->getParsedResponse($request);
+        return $this->provider->getResponse($request);
     }
 
     /**
@@ -202,58 +270,5 @@ abstract class AbstractProvider
             $url .= '?' . http_build_query($params);
         }
         return $url;
-    }
-
-    /**
-     * @return array
-     */
-    public static function getAuthParameters()
-    {
-        return [
-            'access_type' => 'offline',
-            'include_granted_scopes' => 'true',
-            'prompt' => 'consent select_account',
-        ];
-    }
-
-    /**
-     * @param array $parameters
-     * @return array
-     */
-    public static function mergeAuthParameters($parameters)
-    {
-        return array_unique(array_merge(static::getAuthParameters(), $parameters));
-    }
-
-    /**
-     * @return array
-     */
-    public static function getAuthScopes()
-    {
-        return [
-            'https://www.googleapis.com/auth/userinfo.email',
-            'https://www.googleapis.com/auth/userinfo.profile',
-        ];
-    }
-
-    /**
-     * @param array $scopes
-     * @return array
-     */
-    public static function mergeAuthScopes($scopes)
-    {
-        return array_unique(array_merge(static::getAuthScopes(), $scopes));
-    }
-
-    /**
-     * @param $scopes
-     * @return bool
-     */
-    public static function checkAuthScopes($scopes)
-    {
-        if (is_string($scopes)) {
-            $scopes = explode(' ', $scopes);
-        }
-        return count(array_diff(static::getAuthScopes(), $scopes)) ? false : true;
     }
 }
