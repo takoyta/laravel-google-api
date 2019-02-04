@@ -48,6 +48,15 @@ class ContentID extends AbstractProvider
     }
 
     /**
+     * @param array $params
+     * @return mixed
+     */
+    public function getContentOwnerListRequest($params = [])
+    {
+        return $this->getComputedRequest('GET', $this->buildQuery($this->url . '/contentOwners', $params));
+    }
+
+    /**
      * @param mixed $id
      * @param array $params
      * @return mixed
