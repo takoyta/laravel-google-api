@@ -2,10 +2,9 @@
 
 namespace Websecret\LaravelGoogleApi\Provider\Google;
 
+use Websecret\LaravelGoogleApi\AbstractProvider;
 use Websecret\LaravelGoogleApi\Exceptions\AuthorizationException;
 use Websecret\LaravelGoogleApi\Exceptions\InvalidStateException;
-use Websecret\LaravelGoogleApi\AbstractProvider;
-use Illuminate\Support\Facades\Response;
 
 class Auth extends AbstractProvider
 {

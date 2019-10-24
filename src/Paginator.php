@@ -42,7 +42,7 @@ class Paginator
             $this->total += $count;
             $total = array_get($response, 'pageInfo.totalResults');
             $this->nextPageToken = array_get($response, 'nextPageToken');
-            yield $request;
+            yield $response;
         } while ($this->nextPageToken && ($this->total < $total));
     }
 

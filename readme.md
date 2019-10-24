@@ -11,7 +11,7 @@ composer require websecret/laravel-google-api
 ### Usage
 
 ```php
-$youtubeChannelsProvider = new Websecret\LaravelGoogleApi\Provider\Youtube\Channels([
+$youtubeChannelsProvider = new \Websecret\LaravelGoogleApi\Provider\Youtube\Channels([
     'clientId' => config('services.google.client_id'),
     'clientSecret' => config('services.google.client_secret'),
 ]);
@@ -33,7 +33,7 @@ $response = $youtubeChannelsProvider->getParsedResponse($request);
 Or if you have api key
 
 ```php
-$youtubeChannelsProvider = new Websecret\LaravelGoogleApi\Provider\Youtube\Channels([
+$youtubeChannelsProvider = new \Websecret\LaravelGoogleApi\Provider\Youtube\Channels([
     'apiKey' => config('services.google.api_key'),
 ]);
 ```
@@ -41,27 +41,54 @@ $youtubeChannelsProvider = new Websecret\LaravelGoogleApi\Provider\Youtube\Chann
 #### Pagination
 
 ```php
-$youtubeChannelsPaginator = new Websecret\LaravelGoogleApi\Paginator($youtubeChannelsProvider);
+$youtubeChannelsPaginator = new \Websecret\LaravelGoogleApi\Paginator($youtubeChannelsProvider);
 
-foreach($youtubeChannelsPaginator->paginate($youtubeChannelsProvider->getListRequest($params)) as $youtubeChannelsRequest) {
-    $response = $youtubeChannelsProvider->getParsedResponse($youtubeChannelsRequest); 
+foreach($youtubeChannelsPaginator->paginate($youtubeChannelsProvider->getListRequest($params)) as $youtubeChannelsResponse) {
+    foreach($youtubeChannelsResponse['items'] as $item) {
+        dump($item);
+    }
 }       
 ```
 
 ### Available providers
 
-* Youtube
-    * Analytics
-        *   getReportsRequest
-    * Channels
-        *   getListRequest
-    * Search
-        *   getListRequest
-* Plus
-    * People
-        * getUserIdRequest
 * Google
     * Auth
         * authorize
         * handleAuthorization
+* Plus
+    * People
+        * getUserIdRequest
+* Youtube
+    * Analytics
+        * getReportsRequest
+    * Channels
+        * getListRequest
+    * ContentID
+        * getClaimSearchRequest
+        * getAssetRequest
+        * getAssetsListRequest
+        * getContentOwnerListRequest
+        * getContentOwnerRequest
+    * I18nLanguages
+        * getListRequest
+    * I18nRegions
+        * getListRequest
+    * PlaylistItems
+        * getListRequest
+    * Playlists
+        * getListRequest
+    * Search
+        * getListRequest
+    * VideoCategories
+        * getListRequest
+    * Videos
+        * getListRequest
+* YoutubeAnalytics
+    * Jobs
+        * getListRequest
+    * Reports
+        * getListRequest
+    * ReportTypes
+        * getListRequest
 

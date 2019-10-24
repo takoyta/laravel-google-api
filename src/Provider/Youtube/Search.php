@@ -2,8 +2,8 @@
 
 namespace Websecret\LaravelGoogleApi\Provider\Youtube;
 
-use Websecret\LaravelGoogleApi\AbstractProvider;
 use Psr\Http\Message\RequestInterface;
+use Websecret\LaravelGoogleApi\AbstractProvider;
 
 class Search extends AbstractProvider
 {
