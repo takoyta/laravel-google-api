@@ -1,10 +1,10 @@
 <?php
 
-namespace Websecret\LaravelGoogleApi\Provider\Google;
+namespace Takoyta\LaravelGoogleApi\Provider\Google;
 
-use Websecret\LaravelGoogleApi\AbstractProvider;
-use Websecret\LaravelGoogleApi\Exceptions\AuthorizationException;
-use Websecret\LaravelGoogleApi\Exceptions\InvalidStateException;
+use Takoyta\LaravelGoogleApi\AbstractProvider;
+use Takoyta\LaravelGoogleApi\Exceptions\AuthorizationException;
+use Takoyta\LaravelGoogleApi\Exceptions\InvalidStateException;
 
 class Auth extends AbstractProvider
 {
@@ -18,16 +18,20 @@ class Auth extends AbstractProvider
         if (count($scopes)) {
             $parameters['scope'] = $scopes;
         }
+
         if (isset($parameters['prompt'])) {
             $parameters['approval_prompt'] = null;
         }
+
         $authorizationUrl = $this->provider->getAuthorizationUrl($parameters);
         $this->setAuthSession();
+
         return redirect($authorizationUrl);
     }
 
     /**
      * @param array $params
+     * @return
      * @throws AuthorizationException
      * @throws InvalidStateException
      */
@@ -45,6 +49,7 @@ class Auth extends AbstractProvider
             'code' => $params['code'],
         ]);
         $this->setToken($token);
+
         return $this->provider->getResourceOwner($token)->toArray();
     }
 

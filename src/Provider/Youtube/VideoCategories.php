@@ -1,8 +1,8 @@
 <?php
 
-namespace Websecret\LaravelGoogleApi\Provider\Youtube;
+namespace Takoyta\LaravelGoogleApi\Provider\Youtube;
 
-use Websecret\LaravelGoogleApi\AbstractProvider;
+use Takoyta\LaravelGoogleApi\AbstractProvider;
 
 class VideoCategories extends AbstractProvider
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Websecret\LaravelGoogleApi;
+namespace Takoyta\LaravelGoogleApi;
 
 use Psr\Http\Message\RequestInterface;
 
@@ -21,7 +21,7 @@ class Paginator
     {
         $this->provider = $provider;
         $this->itemsKey = $itemsKey;
-        if (!is_null($nextPageToken)) {
+        if ($nextPageToken !== null) {
             $this->nextPageToken = $nextPageToken;
         }
     }
@@ -36,9 +36,14 @@ class Paginator
             if ($this->nextPageToken) {
                 $request = $this->addPageTokenToRequest($request);
             }
+
             $response = $this->provider->getParsedResponse($request);
             $count = count(array_get($response, $this->itemsKey, []));
-            if (!$count) break;
+
+            if (!$count) {
+                break;
+            }
+
             $this->total += $count;
             $total = array_get($response, 'pageInfo.totalResults');
             $this->nextPageToken = array_get($response, 'nextPageToken');

@@ -1,17 +1,17 @@
-## Laravel 5 Google API Provider
+## Laravel 5/6/7 Google API Provider
 
 ### Install
 
 Require this package with composer using the following command:
 
 ```bash
-composer require websecret/laravel-google-api
+composer require takoyta/laravel-google-api
 ```
 
 ### Usage
 
 ```php
-$youtubeChannelsProvider = new \Websecret\LaravelGoogleApi\Provider\Youtube\Channels([
+$youtubeChannelsProvider = new \Takoyta\LaravelGoogleApi\Provider\Youtube\Channels([
     'clientId' => config('services.google.client_id'),
     'clientSecret' => config('services.google.client_secret'),
 ]);
@@ -33,7 +33,7 @@ $response = $youtubeChannelsProvider->getParsedResponse($request);
 Or if you have api key
 
 ```php
-$youtubeChannelsProvider = new \Websecret\LaravelGoogleApi\Provider\Youtube\Channels([
+$youtubeChannelsProvider = new \Takoyta\LaravelGoogleApi\Provider\Youtube\Channels([
     'apiKey' => config('services.google.api_key'),
 ]);
 ```
@@ -41,7 +41,7 @@ $youtubeChannelsProvider = new \Websecret\LaravelGoogleApi\Provider\Youtube\Chan
 #### Pagination
 
 ```php
-$youtubeChannelsPaginator = new \Websecret\LaravelGoogleApi\Paginator($youtubeChannelsProvider);
+$youtubeChannelsPaginator = new \Takoyta\LaravelGoogleApi\Paginator($youtubeChannelsProvider);
 
 foreach($youtubeChannelsPaginator->paginate($youtubeChannelsProvider->getListRequest($params)) as $youtubeChannelsResponse) {
     foreach($youtubeChannelsResponse['items'] as $item) {

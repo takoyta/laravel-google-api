@@ -1,8 +1,8 @@
 <?php
 
-namespace Websecret\LaravelGoogleApi\Provider\YoutubeAnalytics;
+namespace Takoyta\LaravelGoogleApi\Provider\YoutubeAnalytics;
 
-use Websecret\LaravelGoogleApi\AbstractProvider;
+use Takoyta\LaravelGoogleApi\AbstractProvider;
 
 class Reports extends AbstractProvider
 {
