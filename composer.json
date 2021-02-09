@@ -1,5 +1,5 @@
 {
-    "name": "websecret/laravel-google-api",
+    "name": "takoyta/laravel-google-api",
     "description": "Google API Provider for Laravel projects",
     "type": "library",
     "license": "MIT",
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Websecret\\LaravelGoogleApi\\": "src"
+            "Takoyta\\LaravelGoogleApi\\": "src"
         }
     }
 }
