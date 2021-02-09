@@ -1,9 +1,9 @@
 <?php
 
-namespace Websecret\LaravelGoogleApi\Provider\Youtube;
+namespace Takoyta\LaravelGoogleApi\Provider\Youtube;
 
 use Psr\Http\Message\RequestInterface;
-use Websecret\LaravelGoogleApi\AbstractProvider;
+use Takoyta\LaravelGoogleApi\AbstractProvider;
 
 class Search extends AbstractProvider
 {

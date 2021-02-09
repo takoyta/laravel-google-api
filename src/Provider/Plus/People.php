@@ -1,8 +1,8 @@
 <?php
 
-namespace Websecret\LaravelGoogleApi\Provider\Plus;
+namespace Takoyta\LaravelGoogleApi\Provider\Plus;
 
-use Websecret\LaravelGoogleApi\AbstractProvider;
+use Takoyta\LaravelGoogleApi\AbstractProvider;
 
 class People extends AbstractProvider
 {

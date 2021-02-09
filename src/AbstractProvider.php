@@ -1,6 +1,6 @@
 <?php
 
-namespace Websecret\LaravelGoogleApi;
+namespace Takoyta\LaravelGoogleApi;
 
 use League\OAuth2 as OAuth2;
 use Psr\Http\Message\RequestInterface;
